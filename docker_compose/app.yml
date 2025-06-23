@@ -1,0 +1,31 @@
+networks:
+  shortener_network:
+    external: true
+
+services:
+  # shortener_broker:
+  #   image: rabbitmq:3-management
+  #   restart: always
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+  #     RABBITMQ_DEFAULT_PASS: ${RABBIT_PASS}
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - shortener_network
+
+  shortener_service:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    depends_on:
+      - shortener_storage
+      - shortener_cache
+      # - shortener_broker
+    ports:
+      - ${APP_OUT_PORT}:${APP_IN_PORT}
+    networks:
+      - shortener_network

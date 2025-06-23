@@ -1,0 +1,32 @@
+networks:
+  shortener_network:
+    name: shortener_network
+    driver: bridge
+
+services:
+  shortener_storage:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - ${POSTGRES_OUT_PORT}:5432
+    env_file:
+      - ../.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - shortener_network
+
+  shortener_cache:
+    image: redis:latest
+    restart: always
+    ports:
+      - ${REDIS_OUT_PORT}:6379
+    networks:
+      - shortener_network
+
+volumes:
+  pgdata:
