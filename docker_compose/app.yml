@@ -25,7 +25,9 @@ services:
       - shortener_storage
       - shortener_cache
       # - shortener_broker
+    volumes:
+      - ../app/migrations:/usr/src/app/app/migrations
     ports:
-      - ${APP_OUT_PORT}:${APP_IN_PORT}
+      - ${APP_OUT_PORT}:8000
     networks:
       - shortener_network

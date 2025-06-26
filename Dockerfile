@@ -14,4 +14,4 @@ RUN poetry install --no-root --no-interaction --no-ansi
 
 COPY . .
 
-CMD alembic upgrade head; python app/main.py
+CMD python app/main.py

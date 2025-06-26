@@ -13,8 +13,6 @@ services:
       POSTGRES_DB: ${DB_NAME}
     ports:
       - ${POSTGRES_OUT_PORT}:5432
-    env_file:
-      - ../.env
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:

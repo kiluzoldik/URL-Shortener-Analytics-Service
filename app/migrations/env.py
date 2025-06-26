@@ -5,9 +5,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
+from app.config.postgres.config import settings
 from app.config.postgres.database import Base
 from app.models import *
-from app.config.postgres.config import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

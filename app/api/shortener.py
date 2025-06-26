@@ -1,12 +1,14 @@
 from fastapi import APIRouter
 
+from app.api.dependencies import UserIdDep, DBDep
+
 
 short_router = APIRouter(prefix="/shortener", tags=["Укорачивание ссылки"])
 
 
 @short_router.get("/health")
-async def check_service():
-    ...
+async def check_service(user_id: UserIdDep):
+    return {"detail": user_id}
 
 
 @short_router.post("/shorten")
