@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response
 
-from app.schemas.auth import AddUser
+from app.schemas.users import AddUser
 from app.services.auth import AuthService
 from app.api.dependencies import DBDep, UserIdDep
 

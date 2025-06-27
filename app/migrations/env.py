@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app.config.postgres.config import settings
+from app.config.config import settings
 from app.config.postgres.database import Base
 from app.models import *
 

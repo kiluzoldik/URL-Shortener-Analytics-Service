@@ -1,3 +1,4 @@
+from app.repositories.links import LinksRepository
 from app.repositories.users import UsersRepository
 
 
@@ -9,6 +10,7 @@ class DBManager:
         self.session = self.session_factory()
         
         self.users = UsersRepository(self.session)
+        self.links = LinksRepository(self.session)
         
         return self
     

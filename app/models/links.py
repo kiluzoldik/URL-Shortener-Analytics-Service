@@ -23,9 +23,10 @@ class Links(Base):
     )
     deleted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
+        server_onupdate=func.now(),
         nullable=True
     )
-    expires_at: Mapped[int] = mapped_column(nullable=True, unique=False)
+    expires_at: Mapped[int] = mapped_column(nullable=False, unique=False)
     click_count: Mapped[int] = mapped_column(default=0)
     active: Mapped[bool] = mapped_column(default=True)
     

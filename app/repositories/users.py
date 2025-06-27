@@ -4,7 +4,7 @@ from sqlalchemy.exc import NoResultFound
 
 from app.models.users import Users
 from app.repositories.base import BaseRepository
-from app.schemas.auth import UserWithHashedPassword
+from app.schemas.users import UserWithHashedPassword
 
 
 class UsersRepository(BaseRepository):

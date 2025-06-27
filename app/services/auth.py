@@ -7,9 +7,9 @@ from passlib.context import CryptContext
 from sqlalchemy.exc import NoResultFound
 
 from app.exceptions.api import InvalidAuthToken
-from app.schemas.auth import DBUser, AddUser, User
+from app.schemas.users import DBUser, AddUser, User
 from app.services.base import BaseService
-from app.config.postgres.config import settings
+from app.config.config import settings
 
 
 class AuthService(BaseService):
