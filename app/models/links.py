@@ -15,6 +15,7 @@ class Links(Base):
     
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     code: Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
+    short_link: Mapped[str] = mapped_column(unique=True, nullable=False)
     original_url: Mapped[str] = mapped_column(nullable=False, unique=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

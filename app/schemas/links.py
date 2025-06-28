@@ -11,6 +11,7 @@ class AddRequestLink(BaseModel):
     
 class AddLink(AddRequestLink):
     code: str
+    short_link: str
     owner_id: UUID
     
     
@@ -29,3 +30,11 @@ class Link(BaseModel):
     click_count: int = 0
     active: bool = False
     owner_id: UUID
+    
+    
+class RedisLink(BaseModel):
+    code: str
+    link: str
+    original_url: str
+    expires_at: int
+    

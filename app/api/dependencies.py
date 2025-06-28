@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import Depends, Request
 
 from app.utils.db_manager import DBManager
+from app.utils.redis_manager import RedisManager
 from app.services.auth import AuthService
 from app.config.postgres.database import sessionmaker
 
@@ -12,6 +13,12 @@ async def db():
         yield db
         
 DBDep = Annotated[DBManager, Depends(db)]
+
+async def redis():
+    async with RedisManager(Request().app) as redis:
+        yield
+        
+RedisDep = Annotated[RedisManager, Depends(redis)]
 
 def get_token(request: Request):
     token = request.cookies.get("access_token")
