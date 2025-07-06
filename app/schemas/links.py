@@ -16,8 +16,9 @@ class AddLink(AddRequestLink):
     
     
 class UpdateLink(BaseModel):
-    code: str
-    active: bool
+    code: Optional[str] = None
+    active: Optional[bool] = None
+    click_count: Optional[int] = None
     
     
 class Link(BaseModel):
@@ -38,3 +39,6 @@ class RedisLink(BaseModel):
     original_url: str
     expires_at: int
     
+    
+class RedisUpdateLink(BaseModel):
+    clicks: Optional[int] = 0

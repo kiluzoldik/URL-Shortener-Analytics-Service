@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 
-from app.api.dependencies import UserIdDep, DBDep
+from app.api.dependencies import RedisDep, UserIdDep, DBDep
 from app.schemas.links import AddRequestLink
 from app.services.shortener import ShortenerService
 
@@ -9,14 +9,14 @@ short_router = APIRouter(prefix="/api/shortener", tags=["Укорачивани�
 
 
 @short_router.get("/health")
-async def check_service(user_id: UserIdDep, request: Request):
-    return await request.app
+async def check_service():
+    return {"detail": "OK"}
 
 
-@short_router.post("/shorten")
-async def create_short_link(db: DBDep, user_id: UserIdDep, data: AddRequestLink):
+@short_router.post("/shorten", summary="Сокращение ссылки")
+async def create_short_link(db: DBDep, user_id: UserIdDep, redis: RedisDep, data: AddRequestLink) -> str:
     try:
-        return await ShortenerService(db).create_short_link(user_id, data)
+        return await ShortenerService(db, redis).create_short_link(user_id, data)
     except Exception:
         raise Exception # исключение
 
@@ -56,6 +56,6 @@ async def get_user_link(code: str):
 @short_router.delete("/links/{code}")
 async def delete_user_link(code: str):
     try:
-        ...
+        await ShortenerService().delete_link(code)
     except Exception:
         raise Exception # исключение

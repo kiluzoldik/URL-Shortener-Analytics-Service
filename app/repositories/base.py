@@ -1,9 +1,7 @@
 from asyncpg import UniqueViolationError
 from pydantic import BaseModel
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, update
 from sqlalchemy.exc import IntegrityError, NoResultFound
-
-from app.config.postgres.database import sessionmaker
 
 
 class BaseRepository:
@@ -33,3 +31,14 @@ class BaseRepository:
             raise Exception # исключение
         
         return self.schema.model_validate(data)
+    
+    async def update(self, data: BaseModel, exclude_unset: bool | None = False, **filter_by):
+        query = (
+            update(self.model)
+            .filter_by(**filter_by)
+            .values(**data.model_dump(exclude_unset=exclude_unset))
+        )
+        try:
+            await self.session.execute(query)
+        except Exception as e:
+            raise Exception # исключение
