@@ -3,10 +3,12 @@ from pydantic import BaseModel
 from sqlalchemy import insert, select, update
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
+from app.repositories.mapper.mappers import LinkDataMapper
+
 
 class BaseRepository:
     model = None
-    schema = None
+    mapper = LinkDataMapper
     
     def __init__(self, session):
         self.session = session
@@ -30,9 +32,14 @@ class BaseRepository:
         except NoResultFound:
             raise Exception # исключение
         
-        return self.schema.model_validate(data)
+        return self.mapper.map_to_domain_entity(data)
     
-    async def update(self, data: BaseModel, exclude_unset: bool | None = False, **filter_by):
+    async def get_all(self, **filter_by):
+        query = select(self.model).filter_by(**filter_by)
+        result = await self.session.execute(query)
+        return [self.mapper.map_to_domain_entity(obj) for obj in result.scalars().all()]
+    
+    async def update(self, data: BaseModel, exclude_unset: bool = False, **filter_by):
         query = (
             update(self.model)
             .filter_by(**filter_by)
