@@ -2,8 +2,6 @@ from uuid import UUID
 from string import ascii_letters
 from random import choices, randint
 
-from fastapi.responses import RedirectResponse
-
 from app.schemas.links import AddLink, AddRequestLink, Link, RedisLink, RedisUpdateLink, UpdateLink
 from app.services.base import BaseService
 from app.config.config import settings
@@ -63,7 +61,7 @@ class ShortenerService(BaseService):
         await self.db.links.update(update_data, exclude_unset=True, code=code, owner_id=user_id)
         await self.db.commit()
     
-    async def redirect(self, code: str):
+    async def url_for_redirect(self, code: str) -> str:
         link_data = await self.redis.get_link(code)
         original_url = link_data.get("original_url")
         clicks = link_data.get("clicks")
@@ -72,4 +70,4 @@ class ShortenerService(BaseService):
         await self.db.links.update(data=data, exclude_unset=True, code=code)
         await self.db.commit()
         
-        return RedirectResponse(url=original_url)
+        return original_url
