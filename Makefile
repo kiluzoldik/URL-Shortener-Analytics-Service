@@ -3,6 +3,7 @@ EXEC = docker exec -it
 APP_FILE = docker_compose/app.yml
 STORAGES_FILE = docker_compose/storages.yml
 CACHE_FILE = docker_compose/redis.yml
+BROKER_FILE = docker_compose/broker.yml
 DB_CONTAINER = docker_compose-shortener_storage-1
 ENV_FILE = --env-file ../URL-Shortener-Analytics-Service/.env
 APP_CONTAINER = docker_compose-shortener_service-1
@@ -15,6 +16,10 @@ storages:
 .PHONY: cache
 cache:
 	${DC} -f ${CACHE_FILE} ${ENV_FILE} up -d
+
+.PHONY: broker
+broker:
+	${DC} -f ${BROKER_FILE} ${ENV_FILE} up -d
 
 .PHONY: storages-down
 storages-down:

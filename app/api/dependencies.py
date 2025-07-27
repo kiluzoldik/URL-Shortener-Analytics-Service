@@ -4,6 +4,7 @@ import asyncio
 from fastapi import Depends, FastAPI, Request
 
 from app.services.shortener import ShortenerService
+from app.taskiq import broker
 from app.utils.db_manager import DBManager
 from app.utils.redis_manager import RedisManager
 from app.services.auth import AuthService
@@ -13,8 +14,10 @@ from app.config.postgres.database import sessionmaker, sessionmaker_null_pool
 async def db():
     async with DBManager(sessionmaker) as db:
         yield db
-        
+
+
 DBDep = Annotated[DBManager, Depends(db)]
+
 
 async def listener_channel_task(redis: RedisManager):
     pubsub = redis.pubsub()
@@ -43,33 +46,41 @@ async def listener_channel_task(redis: RedisManager):
     finally:
         await pubsub.punsubscribe("__keyevent@0__:expired")
 
+
 async def redis_lifespan(app: FastAPI):
     async with RedisManager(app) as redis:
         print("Начало приложения")
         listener_task = asyncio.create_task(listener_channel_task(redis))
+        await broker.startup()
         yield
         print("Конец приложения")
+        await broker.shutdown()
         listener_task.cancel()
-        
+
+
 async def redis_dep():
     async with RedisManager() as redis:
         yield redis
-        
+
+
 RedisDep = Annotated[RedisManager, Depends(redis_dep)]
+
 
 def get_token(request: Request):
     token = request.cookies.get("access_token")
     if not token:
-        raise Exception # исключение
-    
+        raise Exception  # исключение
+
     return token
+
 
 def get_user(token: str = Depends(get_token)):
     try:
         user_id = AuthService().decode_token(token)
     except Exception:
-        raise Exception # исключение
-    
+        raise Exception  # исключение
+
     return user_id
+
 
 UserIdDep = Annotated[int, Depends(get_user)]
